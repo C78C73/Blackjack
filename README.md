@@ -1,2 +1,2 @@
-# Blackjack
+# Simple Blackjack
 Blackjack in C#
