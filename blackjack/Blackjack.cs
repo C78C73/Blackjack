@@ -1,97 +1,87 @@
-﻿namespace test;
+﻿using System;
+using System.Linq;
 
-class Program
+namespace test
 {
-    static void Main(string[] args)
+    class Program
     {
-        Random random = new Random();
-
-        int[] dealer = {random.Next(1, 11), random.Next(1, 11)};
-        int[] myCards = {random.Next(1, 11), random.Next(1, 11)};
-
-        Console.WriteLine($"\nDealers hand: {dealer[0]}");
-        Console.WriteLine($"\nYour hand: {myCards.Sum()}");
-
-        string hitOrStand = "";
-        Console.Write($"\nHit or stand? ");
-        hitOrStand = Console.ReadLine()!;
-
-        if (hitOrStand.Contains("hit"))
+        static void Main(string[] args)
         {
-            bool hitYes = true;
+            Random random = new Random();
+            int[] dealer = {random.Next(1, 11), random.Next(1, 11)};
+            int[] myCards = {random.Next(1, 11), random.Next(1, 11)};
 
-            while (hitYes) 
+            Console.WriteLine($"\nDealer's hand: {dealer[0]}");
+            Console.WriteLine($"Your hand: {myCards.Sum()}");
+
+            string hitOrStand = "";
+            bool gameOver = false;
+
+            while (!gameOver)
             {
-                int newCard = random.Next(1, 11);
-                myCards = myCards.Concat(new int[] { newCard }).ToArray();     
-
-                Console.WriteLine($"Your hand {myCards.Sum()}");
-
-                if (myCards.Sum() > 21)
-                {
-                    Console.WriteLine($"\nYou busted with {myCards.Sum()}! Dealer wins.\n");
-                    hitYes = false;
-                    Environment.Exit(0);
-                }
-
-                if (myCards.Sum() == 21)
-                {
-                    Console.WriteLine("\nBlackjack!");
-                }
-
                 Console.Write($"\nHit or stand? ");
-                hitOrStand = Console.ReadLine()!;
+                hitOrStand = Console.ReadLine()!.ToLower();
 
                 if (hitOrStand.Contains("hit"))
                 {
-                    continue;
-                } 
+                    int newCard = random.Next(1, 11);
+                    myCards = myCards.Concat(new int[] { newCard }).ToArray();
+                    Console.WriteLine($"Your hand: {myCards.Sum()}");
+
+                    if (myCards.Sum() > 21)
+                    {
+                        Console.WriteLine($"\nYou busted with {myCards.Sum()}! Dealer wins.\n");
+                        gameOver = true;
+                    }
+                    else if (myCards.Sum() == 21)
+                    {
+                        Console.WriteLine("\nBlackjack!");
+                        gameOver = true;
+                    }
+                }
                 else if (hitOrStand.Contains("stand"))
                 {
+                    Console.WriteLine($"Your hand: {myCards.Sum()}");
                     break;
                 }
-                else 
+                else
                 {
                     Console.WriteLine("\nInvalid input, please try again.\n");
                     continue;
                 }
             }
-        }
-        else if (hitOrStand.Contains("stand"))
-        {
-            Console.WriteLine($"Your hand {myCards.Sum()}");
-        }
 
-        while (dealer.Sum() < 17)
-        {  
-            int newCard = random.Next(1, 11);
-            dealer = dealer.Concat(new int[] { newCard }).ToArray();
-
-            if (dealer.Sum() > 21)
+            if (!gameOver)
             {
-                Console.WriteLine($"\nDealer busts with {dealer.Sum()}! You win.\n");
-                Environment.Exit(0);
-            }
-            else if (dealer.Sum() == 21)
-            {
-                Console.WriteLine("\nDealer has Blackjack!\n");
-                break;
-            }
-        }
+                while (dealer.Sum() < 17)
+                {
+                    int newCard = random.Next(1, 11);
+                    dealer = dealer.Concat(new int[] { newCard }).ToArray();
+                }
 
-        Console.WriteLine($"Dealers hand {dealer.Sum()}");
+                Console.WriteLine($"Dealer's hand: {dealer.Sum()}");
 
-        if (myCards.Sum() > dealer.Sum())
-        {
-            Console.WriteLine("\nYou Win!\n");
-        }
-        else if (myCards.Sum() < dealer.Sum())
-        {
-            Console.WriteLine("\nYou lose!\n");
-        }
-        else if (myCards.Sum() == dealer.Sum())
-        {
-            Console.WriteLine("\nPush, you get your money back!\n");
+                if (dealer.Sum() > 21)
+                {
+                    Console.WriteLine($"\nDealer busts with {dealer.Sum()}! You win.\n");
+                }
+                else if (dealer.Sum() == 21)
+                {
+                    Console.WriteLine("\nDealer has Blackjack!\n");
+                }
+                else if (myCards.Sum() > dealer.Sum())
+                {
+                    Console.WriteLine("\nYou Win!\n");
+                }
+                else if (myCards.Sum() < dealer.Sum())
+                {
+                    Console.WriteLine("\nYou lose!\n");
+                }
+                else
+                {
+                    Console.WriteLine("\nPush, you get your money back!\n");
+                }
+            }
         }
     }
 }
